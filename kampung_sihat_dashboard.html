@@ -1,0 +1,2413 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kampung Sihat Research Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f7f3;
+      --surface: #ffffff;
+      --surface-2: #edf3ee;
+      --ink: #1d2a2a;
+      --muted: #62706f;
+      --line: #dce5df;
+      --teal: #0f766e;
+      --teal-2: #d9f0eb;
+      --coral: #d85b45;
+      --amber: #c47a16;
+      --green: #2f8a52;
+      --slate: #40505a;
+      --danger: #b7352d;
+      --shadow: 0 16px 38px rgba(33, 45, 42, 0.08);
+      --radius: 8px;
+      --sidebar: 292px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(15, 118, 110, 0.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(196, 122, 22, 0.05) 1px, transparent 1px),
+        var(--bg);
+      background-size: 32px 32px;
+      color: var(--ink);
+      font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, Arial, sans-serif;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      background: #fbfcf9;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      overflow: auto;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: var(--teal);
+      border-radius: 8px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav button,
+    .ghost-button,
+    .primary-button,
+    .secondary-button {
+      border: 1px solid transparent;
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 9px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 160ms ease;
+      white-space: nowrap;
+    }
+
+    .nav button {
+      justify-content: flex-start;
+      background: transparent;
+      color: var(--slate);
+    }
+
+    .nav button[aria-selected="true"] {
+      background: var(--teal-2);
+      color: #084f49;
+      border-color: #b7ddd4;
+      font-weight: 700;
+    }
+
+    .nav button:hover,
+    .ghost-button:hover {
+      background: var(--surface-2);
+    }
+
+    .primary-button {
+      background: var(--teal);
+      color: #ffffff;
+      border-color: var(--teal);
+      font-weight: 800;
+    }
+
+    .primary-button:hover {
+      background: #0b655e;
+    }
+
+    .secondary-button {
+      background: #fff7ec;
+      color: #7b450d;
+      border-color: #efd4a8;
+      font-weight: 700;
+    }
+
+    .ghost-button {
+      background: #ffffff;
+      border-color: var(--line);
+      color: var(--slate);
+    }
+
+    .button-icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
+
+    .connection {
+      margin-top: auto;
+      padding: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: grid;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .url-box {
+      color: var(--ink);
+      overflow-wrap: anywhere;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px;
+      line-height: 1.35;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 26px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--teal);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 860px;
+      overflow-wrap: anywhere;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .view {
+      display: grid;
+      gap: 18px;
+    }
+
+    .view[hidden] {
+      display: none;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      min-height: 118px;
+      display: grid;
+      align-content: space-between;
+      gap: 10px;
+    }
+
+    .kpi small {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .kpi strong {
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .kpi span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .panel h2,
+    .form-panel h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .panel-note {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .score-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 230px) minmax(0, 1fr) 70px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .score-label {
+      font-weight: 800;
+      color: var(--slate);
+    }
+
+    .bar {
+      height: 12px;
+      background: #e7ece8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      background: var(--teal);
+      border-radius: inherit;
+    }
+
+    .bar-fill.risk {
+      background: var(--coral);
+    }
+
+    .score-value {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fffdfa;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1.1;
+      color: var(--danger);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mini-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .location-summary {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .dist-list,
+    .flag-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .dist-row,
+    .flag-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 54px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dist-label,
+    .flag-label {
+      color: var(--slate);
+      overflow-wrap: anywhere;
+    }
+
+    .dist-count,
+    .flag-count {
+      text-align: right;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dist-track,
+    .flag-track {
+      grid-column: 1 / -1;
+      height: 8px;
+      background: #e7ece8;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: -5px;
+    }
+
+    .dist-fill,
+    .flag-fill {
+      height: 100%;
+      background: var(--amber);
+      border-radius: inherit;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f7faf7;
+      color: var(--slate);
+      font-weight: 800;
+    }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .form-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .form-panel {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .form-panel header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .section-count {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      padding-top: 3px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label.field-label {
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .field-code {
+      color: var(--muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #cbd8d1;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 9px 10px;
+      color: var(--ink);
+      outline: none;
+      transition: 160ms ease;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+      gap: 7px;
+    }
+
+    .choice-chip,
+    .check-chip {
+      min-height: 38px;
+      border: 1px solid #d5ded8;
+      background: #ffffff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 9px;
+      color: var(--slate);
+      user-select: none;
+    }
+
+    .choice-chip input,
+    .check-chip input {
+      accent-color: var(--teal);
+      flex: 0 0 auto;
+    }
+
+    .choice-chip:has(input:checked),
+    .check-chip:has(input:checked) {
+      border-color: var(--teal);
+      background: var(--teal-2);
+      color: #084f49;
+      font-weight: 800;
+    }
+
+    .flag-group {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .flag-group h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .flag-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .sticky-summary {
+      position: sticky;
+      top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .progress {
+      height: 10px;
+      background: #e7ece8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      border-radius: inherit;
+      transition: width 180ms ease;
+    }
+
+    .score-preview {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .preview-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #ffffff;
+    }
+
+    .preview-item small {
+      color: var(--muted);
+      display: block;
+      min-height: 34px;
+    }
+
+    .preview-item strong {
+      font-size: 22px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .form-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .status-line {
+      color: var(--muted);
+      font-size: 12px;
+      min-height: 18px;
+    }
+
+    .variables-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      max-width: min(420px, calc(100vw - 36px));
+      background: #173431;
+      color: #ffffff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: 0 18px 36px rgba(20, 35, 33, 0.22);
+      transform: translateY(18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 180ms ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .empty-state {
+      padding: 18px;
+      border: 1px dashed #bdc9c2;
+      border-radius: 8px;
+      color: var(--muted);
+      background: #fbfcf9;
+    }
+
+    :root {
+      --blue: #2563a8;
+      --cyan: #0b83a5;
+      --rose: #c2413a;
+      --gold: #b77916;
+      --plum: #6f4a8e;
+      --soft-blue: #e5f0fb;
+      --soft-rose: #fae7e4;
+      --soft-gold: #fff3d8;
+      --soft-green: #e3f4e9;
+      --card-shadow: 0 14px 34px rgba(30, 49, 44, 0.09);
+    }
+
+    .topbar {
+      padding: 20px;
+      border: 1px solid rgba(188, 204, 195, 0.82);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(236, 245, 241, 0.94)),
+        #ffffff;
+      box-shadow: var(--card-shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 10px;
+      border: 1px solid #b7ddd4;
+      border-radius: 999px;
+      background: var(--teal-2);
+      color: #084f49;
+    }
+
+    .kpi-grid {
+      gap: 14px;
+    }
+
+    .kpi {
+      position: relative;
+      overflow: hidden;
+      grid-template-columns: minmax(0, 1fr) 46px;
+      align-items: start;
+      align-content: stretch;
+      min-height: 132px;
+      padding: 17px;
+      border-color: rgba(201, 215, 207, 0.95);
+      border-left: 4px solid var(--card-accent, var(--teal));
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 251, 248, 0.96)),
+        var(--surface);
+      box-shadow: var(--card-shadow);
+    }
+
+    .kpi::after {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto auto;
+      width: 104px;
+      height: 104px;
+      background: linear-gradient(135deg, rgba(15, 118, 110, 0.14), rgba(15, 118, 110, 0));
+      pointer-events: none;
+    }
+
+    .kpi[data-tone="blue"] {
+      --card-accent: var(--blue);
+    }
+
+    .kpi[data-tone="gold"] {
+      --card-accent: var(--gold);
+    }
+
+    .kpi[data-tone="danger"],
+    .kpi[data-tone="rose"] {
+      --card-accent: var(--rose);
+    }
+
+    .kpi[data-tone="plum"] {
+      --card-accent: var(--plum);
+    }
+
+    .kpi-main {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .kpi-icon {
+      position: relative;
+      z-index: 1;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: var(--card-accent, var(--teal));
+      background: color-mix(in srgb, var(--card-accent, var(--teal)) 14%, white);
+      border: 1px solid color-mix(in srgb, var(--card-accent, var(--teal)) 25%, white);
+    }
+
+    .kpi-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .kpi small {
+      color: #526462;
+      letter-spacing: 0;
+    }
+
+    .kpi strong {
+      font-size: 38px;
+      color: #172624;
+    }
+
+    .kpi span {
+      grid-column: 1 / -1;
+      position: relative;
+      z-index: 1;
+      padding-top: 2px;
+    }
+
+    .variables-summary .kpi {
+      grid-template-columns: 1fr;
+      border-left-color: var(--blue);
+    }
+
+    .variables-summary .kpi::after {
+      display: none;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.82fr);
+      gap: 16px;
+    }
+
+    .panel {
+      border-color: rgba(201, 215, 207, 0.95);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 253, 251, 0.96)),
+        #ffffff;
+      box-shadow: var(--card-shadow);
+    }
+
+    .panel-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-header h2::before {
+      content: "";
+      width: 9px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--teal);
+      flex: 0 0 auto;
+    }
+
+    .score-list {
+      gap: 10px;
+    }
+
+    .score-row {
+      grid-template-columns: minmax(170px, 240px) minmax(0, 1fr) 98px;
+      gap: 14px;
+      padding: 12px;
+      border: 1px solid #e0e8e3;
+      border-radius: 8px;
+      background: #fbfdfb;
+    }
+
+    .score-label {
+      display: grid;
+      gap: 2px;
+      color: var(--ink);
+    }
+
+    .score-label small {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    .bar {
+      height: 14px;
+      background: #e7eee9;
+      border: 1px solid #dbe5de;
+    }
+
+    .bar-fill {
+      background: linear-gradient(90deg, #0f766e, #2f8a52);
+    }
+
+    .bar-fill.risk {
+      background: linear-gradient(90deg, #d85b45, #b7352d);
+    }
+
+    .score-value {
+      justify-self: end;
+      min-width: 86px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #dce5df;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .mini-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 126px;
+      display: grid;
+      gap: 8px;
+      align-content: space-between;
+      border-color: rgba(216, 91, 69, 0.22);
+      border-left: 4px solid var(--mini-accent, var(--rose));
+      background: linear-gradient(145deg, #fffdfa, #fff4f1);
+    }
+
+    .mini-card[data-tone="gold"] {
+      --mini-accent: var(--gold);
+      background: linear-gradient(145deg, #fffefa, #fff3d8);
+      border-color: rgba(183, 121, 22, 0.25);
+    }
+
+    .mini-card[data-tone="rose"] {
+      --mini-accent: var(--rose);
+    }
+
+    .mini-card[data-tone="plum"] {
+      --mini-accent: var(--plum);
+      background: linear-gradient(145deg, #fffdfa, #f3edf8);
+      border-color: rgba(111, 74, 142, 0.22);
+    }
+
+    .mini-card strong {
+      font-size: 34px;
+      color: var(--mini-accent, var(--rose));
+    }
+
+    .mini-card span {
+      color: #4c5f5d;
+      font-weight: 700;
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mini-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: var(--mini-accent, var(--rose));
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+    }
+
+    .mini-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .dist-list,
+    .flag-list {
+      gap: 8px;
+    }
+
+    .dist-row,
+    .flag-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 10px;
+      border: 1px solid #e0e8e3;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .dist-label,
+    .flag-label {
+      font-weight: 700;
+      color: #314340;
+    }
+
+    .dist-count,
+    .flag-count {
+      min-width: 38px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #f1f6f3;
+      border: 1px solid #dce5df;
+      color: #263633;
+      font-size: 12px;
+    }
+
+    .dist-track,
+    .flag-track {
+      height: 7px;
+      margin-top: 0;
+      background: #edf2ee;
+    }
+
+    .dist-fill {
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .flag-fill {
+      background: linear-gradient(90deg, var(--gold), #d89a32);
+    }
+
+    .table-wrap {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      background: #ffffff;
+    }
+
+    tbody tr {
+      transition: background 140ms ease;
+    }
+
+    tbody tr:hover {
+      background: #f6faf7;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1180px) {
+      .kpi-grid,
+      .split-grid,
+      .variables-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid,
+      .form-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky-summary {
+        position: static;
+      }
+    }
+
+    @media (max-width: 880px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .nav button {
+        justify-content: center;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .topbar {
+        display: grid;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+
+      .form-grid,
+      .flag-grid,
+      .mini-grid,
+      .kpi-grid,
+      .split-grid,
+      .variables-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .score-row {
+        grid-template-columns: 1fr;
+      }
+
+      .score-value {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .sidebar {
+        padding: 18px;
+      }
+
+      .nav {
+        grid-template-columns: 1fr;
+      }
+
+      .nav button {
+        justify-content: flex-start;
+        width: 100%;
+      }
+
+      .connection {
+        margin-top: 0;
+      }
+
+      .main {
+        padding: 14px;
+      }
+
+      .topbar {
+        padding: 18px;
+      }
+
+      h1 {
+        font-size: 27px;
+        overflow-wrap: anywhere;
+      }
+
+      .subtitle {
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .top-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .top-actions button {
+        width: 100%;
+        white-space: normal;
+      }
+
+      .kpi {
+        grid-template-columns: minmax(0, 1fr) 42px;
+      }
+
+      .kpi-icon {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">KS</div>
+        <div>
+          <p class="brand-title">Kampung Sihat</p>
+          <p class="brand-subtitle">แบบเก็บข้อมูลสุขภาพจิตชุมชน</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="เมนูหลัก">
+        <button type="button" data-view-button="dashboard" aria-selected="true">
+          <span aria-hidden="true">▦</span>
+          Dashboard
+        </button>
+        <button type="button" data-view-button="form" aria-selected="false">
+          <span aria-hidden="true">✎</span>
+          Input form
+        </button>
+        <button type="button" data-view-button="variables" aria-selected="false">
+          <span aria-hidden="true">#</span>
+          Variables
+        </button>
+      </nav>
+
+      <div class="connection">
+        <strong>Apps Script Web App URL</strong>
+        <div class="url-box" id="gasUrlBox"></div>
+        <button type="button" class="ghost-button" id="pingButton">ทดสอบการเชื่อมต่อ</button>
+        <div id="connectionStatus" class="status-line">ยังไม่ได้ทดสอบ</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Research data collection</p>
+          <h1>Dashboard และ Input Form</h1>
+          <p class="subtitle">ดึงข้อมูลจากชีต “ข้อมูลดิบ” ผ่าน Apps Script และบันทึกแบบสอบถามใหม่ให้ครบทุกตัวแปร พร้อมคำนวณคะแนนรวมอัตโนมัติ</p>
+        </div>
+        <div class="top-actions">
+          <button type="button" class="ghost-button" id="refreshButton">
+            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15 6.7"/><path d="M3 12a9 9 0 0 1 15-6.7"/><path d="M3 19v-5h5"/><path d="M21 5v5h-5"/></svg>
+            รีเฟรชข้อมูล
+          </button>
+          <button type="button" class="secondary-button" data-view-jump="form">
+            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            เพิ่มแบบสอบถาม
+          </button>
+        </div>
+      </header>
+
+      <section class="view" id="dashboardView">
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="dashboard-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>คะแนนเฉลี่ยรายมิติ</h2>
+                <p class="panel-note">คะแนนอิงตัวแปรรวมจากแบบสอบถาม ไม่ใช่การวินิจฉัยทางการแพทย์</p>
+              </div>
+            </div>
+            <div class="score-list" id="scoreBars"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>กลุ่มที่ควรติดตาม</h2>
+                <p class="panel-note">ใช้เพื่อจัดลำดับการดูแลในงานวิจัยและงานชุมชน</p>
+              </div>
+            </div>
+            <div class="mini-grid" id="alertGrid"></div>
+          </section>
+        </div>
+
+        <div class="split-grid location-summary">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>มัสยิด</h2>
+                <p class="panel-note">พื้นที่เก็บข้อมูล</p>
+              </div>
+            </div>
+            <div class="dist-list" id="mosqueDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>หมู่บ้าน</h2>
+                <p class="panel-note">พื้นที่เก็บข้อมูล</p>
+              </div>
+            </div>
+            <div class="dist-list" id="villageDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>ตำบล</h2>
+                <p class="panel-note">พื้นที่เก็บข้อมูล</p>
+              </div>
+            </div>
+            <div class="dist-list" id="subdistrictDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>อำเภอ</h2>
+                <p class="panel-note">พื้นที่เก็บข้อมูล</p>
+              </div>
+            </div>
+            <div class="dist-list" id="districtDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>จังหวัด</h2>
+                <p class="panel-note">พื้นที่เก็บข้อมูล</p>
+              </div>
+            </div>
+            <div class="dist-list" id="provinceDist"></div>
+          </section>
+        </div>
+
+        <div class="split-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>เพศ</h2>
+                <p class="panel-note">จำนวนผู้ตอบแยกตามเพศ</p>
+              </div>
+            </div>
+            <div class="dist-list" id="genderDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>ช่วงอายุ</h2>
+                <p class="panel-note">กลุ่มอายุของผู้ตอบ</p>
+              </div>
+            </div>
+            <div class="dist-list" id="ageDist"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>ความพร้อมเข้าร่วม</h2>
+                <p class="panel-note">Kampung Sihat</p>
+              </div>
+            </div>
+            <div class="dist-list" id="readyDist"></div>
+          </section>
+        </div>
+
+        <div class="split-grid">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>ปัญหาหลักที่สร้างความเครียด</h2>
+                <p class="panel-note">ตอบได้หลายข้อ</p>
+              </div>
+            </div>
+            <div class="flag-list" id="stressProblemFlags"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>ปัญหาที่น่ากังวลในหมู่บ้าน</h2>
+                <p class="panel-note">ตอบได้หลายข้อ</p>
+              </div>
+            </div>
+            <div class="flag-list" id="villageProblemFlags"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>กิจกรรมที่ต้องการ</h2>
+                <p class="panel-note">ชุมชนหรือมัสยิดจัดได้</p>
+              </div>
+            </div>
+            <div class="flag-list" id="activityFlags"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>รายการล่าสุด</h2>
+              <p class="panel-note">แสดง 12 รายการล่าสุดจากชีตข้อมูลดิบ</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>รหัส</th>
+                  <th>วันที่</th>
+                  <th>ชื่อ</th>
+                  <th>เพศ</th>
+                  <th>อายุ</th>
+                  <th>พื้นที่</th>
+                  <th>เครียด</th>
+                  <th>ซึมเศร้า</th>
+                  <th>พร้อม</th>
+                </tr>
+              </thead>
+              <tbody id="recentRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="formView" hidden>
+        <form id="surveyForm" novalidate>
+          <div class="form-layout">
+            <div class="form-stack" id="formSections"></div>
+
+            <aside class="sticky-summary">
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2>ความครบถ้วน</h2>
+                    <p class="panel-note" id="completionText">0 จาก 0 ช่องที่จำเป็น</p>
+                  </div>
+                </div>
+                <div class="progress" aria-hidden="true">
+                  <div class="progress-fill" id="completionBar"></div>
+                </div>
+              </section>
+
+              <section class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2>คะแนนคำนวณสด</h2>
+                    <p class="panel-note">ค่าที่จะถูกบันทึกลงตัวแปรสูตรคำนวณ</p>
+                  </div>
+                </div>
+                <div class="score-preview" id="scorePreview"></div>
+              </section>
+
+              <section class="panel">
+                <div class="form-actions">
+                  <button type="submit" class="primary-button">
+                    <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+                    บันทึกลง Google Sheets
+                  </button>
+                  <button type="button" class="ghost-button" id="resetButton">ล้างฟอร์ม</button>
+                  <div class="status-line" id="submitStatus">พร้อมกรอกข้อมูล</div>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </form>
+      </section>
+
+      <section class="view" id="variablesView" hidden>
+        <div class="variables-summary" id="variablesSummary"></div>
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>ตัวแปรทั้งหมด</h2>
+              <p class="panel-note">เรียงตามลำดับคอลัมน์ในชีต “ข้อมูลดิบ” รวมตัวแปรพื้นที่ใหม่</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ลำดับ</th>
+                  <th>ชื่อตัวแปร</th>
+                  <th>ส่วน</th>
+                  <th>ข้อคำถาม/ความหมาย</th>
+                  <th>รูปแบบ</th>
+                </tr>
+              </thead>
+              <tbody id="variableRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <iframe name="gasSubmitFrame" class="sr-only" title="GAS submit target"></iframe>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbws54pIW5iP11DuJIwyoBEf_jrMaWRcwmWgVqs9h4R5ydIpe6G_yCYmkpRp7-Bo8I_A2Q/exec';
+
+    const OPTIONS = {
+      gender: ['ชาย', 'หญิง'],
+      age_group: ['ต่ำกว่า 18 ปี', '18-30 ปี', '31-45 ปี', '46-60 ปี', 'มากกว่า 60 ปี'],
+      marital_status: ['โสด', 'สมรส', 'หม้าย/หย่าร้าง'],
+      education: ['ไม่ได้เรียน', 'ประถม', 'มัธยม', 'ปอเนาะ/ศาสนา', 'ปวส./ปวส.', 'ปริญญาตรีขึ้นไป'],
+      income: ['ต่ำกว่า 5,000', '5,001 – 10,000', '10,001 – 20,000', 'มากกว่า 20,000'],
+      living_with: ['ครอบครัว', 'ลำพัง', 'ญาติ', 'อื่นๆ'],
+      yes_no_unsure: ['ใช่', 'ไม่ใช่', 'ไม่แน่ใจ'],
+      stress: ['ไม่มี', 'บางครั้ง', 'บ่อยครั้ง', 'เกือบทุกวัน'],
+      depression: ['ไม่เลย', 'บางวัน', 'บ่อยครั้ง', 'เกือบทุกวัน'],
+      spiritual_freq: ['ทุกวัน (7วัน)', 'บ่อยครั้ง (3-5วัน)', 'บางวัน (1-2วัน)', 'ไม่เลย'],
+      likert_0_4: ['ไม่เลย', 'น้อย', 'ปานกลาง', 'มาก', 'มากที่สุด'],
+      ready: ['พร้อม', 'ไม่พร้อม']
+    };
+
+    const SCORE_MAPS = {
+      yes_no_unsure: { 'ใช่': 1, 'ไม่ใช่': 0, 'ไม่แน่ใจ': 0 },
+      stress: { 'ไม่มี': 0, 'บางครั้ง': 1, 'บ่อยครั้ง': 2, 'เกือบทุกวัน': 3 },
+      depression: { 'ไม่เลย': 0, 'บางวัน': 1, 'บ่อยครั้ง': 2, 'เกือบทุกวัน': 3 },
+      spiritual_freq: { 'ทุกวัน (7วัน)': 3, 'บ่อยครั้ง (3-5วัน)': 2, 'บางวัน (1-2วัน)': 1, 'ไม่เลย': 0 },
+      likert_0_4: { 'ไม่เลย': 0, 'น้อย': 1, 'ปานกลาง': 2, 'มาก': 3, 'มากที่สุด': 4 }
+    };
+
+    const SECTIONS = {
+      management: 'ข้อมูลจัดการ',
+      general: 'ส่วนที่ 1 ข้อมูลทั่วไป',
+      physical: 'ส่วนที่ 2 สุขภาวะกาย',
+      stress: 'ส่วนที่ 3 สุขภาวะจิตใจภายใน - คัดกรองความเครียด',
+      depression: 'ส่วนที่ 3 สุขภาวะจิตใจภายใน - คัดกรองภาวะซึมเศร้า',
+      rohani: 'ส่วนที่ 4 สุขภาวะจิตวิญญาณ (Kesihatan Rohani)',
+      family: 'ส่วนที่ 5 สุขภาวะครอบครัวและสังคม - ความสัมพันธ์ในครอบครัว',
+      social: 'ส่วนที่ 5 สุขภาวะครอบครัวและสังคม - ความสัมพันธ์ทางสังคมและชุมชน',
+      life: 'ส่วนที่ 6 สุขภาวะชีวิตและเศรษฐกิจ',
+      impact: 'ส่วนที่ 7 ผลกระทบจากสถานการณ์พื้นที่',
+      needs: 'ส่วนที่ 8 ความต้องการความช่วยเหลือ',
+      observation: 'ข้อสังเกตจากทีมงาน'
+    };
+
+    const FORM_ORDER = [
+      SECTIONS.management,
+      SECTIONS.general,
+      SECTIONS.physical,
+      SECTIONS.stress,
+      SECTIONS.depression,
+      SECTIONS.rohani,
+      SECTIONS.family,
+      SECTIONS.social,
+      SECTIONS.life,
+      SECTIONS.impact,
+      SECTIONS.needs,
+      SECTIONS.observation
+    ];
+
+    const field = (seq, name, section, label, kind, optionKey, extra = {}) => ({
+      seq, name, section, label, kind, optionKey,
+      required: kind === 'choice',
+      ...extra
+    });
+
+    const computed = (seq, name, section, label) => field(seq, name, section, label, 'computed', null, { required: false });
+    const flag = (seq, name, label, group, shortLabel) => field(seq, name, SECTIONS.needs, label, 'flag', null, { group, shortLabel, required: false });
+
+    const physicalFields = [
+      ['s2_phy_01_meals_on_time', 'ท่านรับประทานอาหารตรงเวลา'],
+      ['s2_phy_02_no_fatigue_chronic_pain', 'ท่านไม่มีอาการอ่อนเพลีย เหนื่อยง่าย หรือปวดเมื่อยเรื้อรัง'],
+      ['s2_phy_03_regular_physical_activity', 'ท่านออกกำลังกายหรือทำกิจกรรมทางกายสม่ำเสมอ'],
+      ['s2_phy_04_enough_sleep', 'ท่านนอนหลับเพียงพอ'],
+      ['s2_phy_05_no_chronic_disease_impact', 'ท่านไม่มีโรคประจำตัวที่กระทบต่อการดำเนินชีวิต'],
+      ['s2_phy_06_halal_toyyiban_food', 'ท่านเลือกทานอาหารฮาลาลและตอยยีบัน'],
+      ['s2_phy_07_use_local_herbs', 'ท่านใช้สมุนไพรพื้นบ้านในการปรุงอาหารหรือรักษา']
+    ].map((item, index) => field(18 + index, item[0], SECTIONS.physical, item[1], 'choice', 'yes_no_unsure'));
+
+    const stressFields = [
+      ['s3_stress_01_sleep_problem', 'มีปัญหาการนอน นอนไม่หลับหรือนอนมาก'],
+      ['s3_stress_02_low_concentration', 'มีสมาธิน้อยลง'],
+      ['s3_stress_03_irritable_restless', 'หงุดหงิด, กระวนกระวาย, วุ่นวายใจ'],
+      ['s3_stress_04_bored', 'รู้สึกเบื่อ เซ็ง'],
+      ['s3_stress_05_avoid_people', 'ไม่อยากพบปะผู้คน']
+    ].map((item, index) => field(26 + index, item[0], SECTIONS.stress, item[1], 'choice', 'stress'));
+
+    const depressionFields = [
+      ['s3_dep_01_little_interest', 'เบื่อ ไม่อยากทำอะไร'],
+      ['s3_dep_02_depressed_hopeless', 'ไม่สบายใจ ซึมเศร้า ท้อแท้'],
+      ['s3_dep_03_sleep_problem', 'หลับยาก หลับๆ ตื่นๆ หรือหลับมากเกินไป'],
+      ['s3_dep_04_tired_low_energy', 'เหนื่อยง่าย ไม่ค่อยมีแรง หมดกำลังใจ'],
+      ['s3_dep_05_appetite_change', 'เบื่ออาหาร หรือกินมากเกินไป'],
+      ['s3_dep_06_feel_bad_no_way_out', 'รู้สึกไม่ดีกับตัวเอง หมดกำลังใจ หรือรู้สึกว่าชีวิตไม่มีทางออก'],
+      ['s3_dep_07_low_concentration_activity', 'ไม่มีสมาธิเวลากิจกรรม เช่น ดูโทรทัศน์ ฟังวิทยุ หรือทำงานที่ต้องใช้ความตั้งใจ'],
+      ['s3_dep_08_slow_or_restless', 'พูดช้า ทำอะไรช้าลงจนคนอื่นสังเกตได้ หรือกระสับกระส่ายไม่สามารถอยู่นิ่งได้เหมือนที่เคยเป็น'],
+      ['s3_dep_09_self_harm_thought', 'คิดทำร้ายตนเอง หรือคิดว่าถ้าตายไปคงจะดี']
+    ].map((item, index) => field(32 + index, item[0], SECTIONS.depression, item[1], 'choice', 'depression', { full: true }));
+
+    const rohaniFields = [
+      ['s4_rohani_01_pray_5_times', 'ท่านละหมาดครบ 5 เวลา'],
+      ['s4_rohani_02_read_quran_zikir', 'อ่านอัลกุรอานหรือซิเกรฺบ่อยแค่ไหน'],
+      ['s4_rohani_03_tahajjud_sunnah_prayer', 'ท่านละหมาดตะฮัจยุด หรือละหมาดซูนัตอื่นๆ'],
+      ['s4_rohani_04_jamaah_mosque', 'ท่านเข้าร่วมละหมาดญะมาอะห์ที่มัสยิดบ่อยเพียงใด'],
+      ['s4_rohani_05_religious_study', 'ท่านศึกษาศาสนาหรือฟังบรรยายศาสนา'],
+      ['s4_rohani_06_self_reflection_before_sleep', 'ท่านทบทวนตนเองก่อนนอน (เรื่องที่ทำดี เรื่องที่ทำไม่ดี)'],
+      ['s4_rohani_07_calm_after_prayer_zikir', 'ท่านรู้สึกสงบหลังการละหมาด/ซิเกร'],
+      ['s4_rohani_08_shukr_grateful_allah', 'ท่านรู้สึกซูโกร ขอบคุณต่ออัลลอฮ'],
+      ['s4_rohani_09_closer_allah_when_problem', 'เมื่อมีปัญหา ท่านรู้สึกใกล้ชิดต่ออัลลอฮมากขึ้น'],
+      ['s4_rohani_10_visit_relatives_neighbors_sick', 'ท่านเยี่ยมเยียนญาติ เพื่อนบ้าน คนป่วย'],
+      ['s4_rohani_11_hope_tawakkal_allah', 'มีความหวังและตะวักกัลต่ออัลลอฮ']
+    ].map((item, index) => field(43 + index, item[0], SECTIONS.rohani, item[1], 'choice', 'spiritual_freq'));
+
+    const familyFields = [
+      ['s5_family_01_listen_each_other', 'คนในครอบครัวรับฟังกัน'],
+      ['s5_family_02_time_together', 'คนในครอบครัวมีเวลาทำกิจกรรมร่วมกัน อยู่ร่วมกัน'],
+      ['s5_family_03_family_safe', 'ท่านรู้สึกว่าครอบครัวเป็นที่ปลอดภัย'],
+      ['s5_family_04_has_consultant_when_distressed', 'เมื่อมีเรื่องทุกข์ใจ ท่านรู้สึกว่ามีคนคอยให้คำปรึกษา'],
+      ['s5_family_05_no_conflict_violence', 'ครอบครัวของท่านไม่มีความขัดแย้ง ไม่มีความรุนแรง*'],
+      ['s5_family_06_help_each_other', 'ครอบครัวช่วยเหลือกันเมื่อมีปัญหา']
+    ].map((item, index) => field(55 + index, item[0], SECTIONS.family, item[1], 'choice', 'likert_0_4'));
+
+    const socialFields = [
+      ['s5_social_01_neighbor_good_relationship', 'ท่านและเพื่อนบ้านมีความสัมพันธ์ที่ดีต่อกัน สามารถพึ่งพากันได้'],
+      ['s5_social_02_join_community_mosque', 'ท่านเข้าร่วมกิจกรรมของชุมชน/มัสยิด'],
+      ['s5_social_03_belong_to_community', 'ท่านรู้สึกว่าตนเองเป็นส่วนหนึ่งของชุมชน'],
+      ['s5_social_04_community_harmony', 'ท่านรู้สึกว่าชุมชนมีความสามัคคีกัน'],
+      ['s5_social_05_community_safety', 'ท่านรู้สึกว่าชุมชนของท่านมีความปลอดภัย']
+    ].map((item, index) => field(62 + index, item[0], SECTIONS.social, item[1], 'choice', 'likert_0_4'));
+
+    const lifeFields = [
+      ['s6_life_01_income_sufficient', 'ท่านมีรายได้เพียงพอต่อค่าใช้จ่าย'],
+      ['s6_life_02_debt_worry', 'ท่านมีความกังวลเรื่องหนี้สิน'],
+      ['s6_life_03_food_worry', 'ท่านมีความกังวลเรื่องปากท้อง'],
+      ['s6_life_04_support_children_basic_education', 'ท่านสามารถส่งเสียลูกหลานจนจบการศึกษาขั้นพื้นฐานได้ มองเห็นอนาคตของลูกหลาน'],
+      ['s6_life_05_life_goal_value', 'ท่านรู้สึกมีเป้าหมายหรือคุณค่าในชีวิต'],
+      ['s6_life_06_access_treatment_when_sick', 'เมื่อท่านหรือครอบครัวเจ็บป่วย สามารถเข้ารับการรักษาได้'],
+      ['s6_life_07_worry_chronic_bedridden_family', 'ท่านมีความกังวล/ความเครียดเรื่องบุคคลในครอบครัวป่วยเรื้อรัง/ติดเตียง'],
+      ['s6_life_08_worry_drug_use_family', 'ท่านมีความกังวล/ความเครียดเรื่องบุคคลในครอบครัวใช้สารเสพติด']
+    ].map((item, index) => field(69 + index, item[0], SECTIONS.life, item[1], 'choice', 'likert_0_4'));
+
+    const impactFields = [
+      ['s7_impact_01_unrest_worry', 'ท่านรู้สึกกังวลต่อเหตุการณ์ความไม่สงบ'],
+      ['s7_impact_02_lost_close_person_violence', 'ท่านเคยสูญเสียคนใกล้ชิดจากเหตุการณ์ความรุนแรง'],
+      ['s7_impact_03_fear_travel', 'ท่านรู้สึกหวาดกลัวเมื่อต้องเดินทาง'],
+      ['s7_impact_04_worry_security_officer_practice', 'ท่านรู้สึกมีความเครียดหรือกังวลต่อการปฏิบัติของเจ้าหน้าที่ความมั่นคง'],
+      ['s7_impact_05_community_need_healing', 'ท่านรู้สึกว่าชุมชนยังต้องการการเยียวยา']
+    ].map((item, index) => field(78 + index, item[0], SECTIONS.impact, item[1], 'choice', 'likert_0_4'));
+
+    const FIELDS = [
+      field(1, 'record_id', SECTIONS.management, 'รหัสแบบสอบถาม/รหัสผู้ตอบ', 'text', null, { required: false, placeholder: 'เว้นว่างเพื่อให้ระบบสร้างให้อัตโนมัติ' }),
+      field(2, 'collection_date', SECTIONS.management, 'วันที่เก็บข้อมูล', 'date', null, { required: true }),
+      field(3, 'data_collector', SECTIONS.management, 'ชื่อผู้เก็บข้อมูล', 'text', null, { required: true }),
+      field(4, 's1_name', SECTIONS.general, 'ชื่อ', 'text', null, { required: false }),
+      field(5, 's1_gender', SECTIONS.general, 'เพศ', 'choice', 'gender', { control: 'select' }),
+      field(6, 's1_age_group', SECTIONS.general, 'อายุ', 'choice', 'age_group', { control: 'select' }),
+      field(7, 's1_marital_status', SECTIONS.general, 'สถานภาพ', 'choice', 'marital_status', { control: 'select' }),
+      field(8, 's1_occupation', SECTIONS.general, 'อาชีพ', 'text', null, { required: false }),
+      field(9, 's1_education', SECTIONS.general, 'ระดับการศึกษา', 'choice', 'education', { control: 'select' }),
+      field(10, 's1_monthly_income', SECTIONS.general, 'รายได้เฉลี่ยต่อเดือน', 'choice', 'income', { control: 'select' }),
+      field(11, 's1_living_with', SECTIONS.general, 'ท่านอาศัยอยู่กับ', 'choice', 'living_with', { control: 'select' }),
+      field(12, 's1_living_with_other', SECTIONS.general, 'ท่านอาศัยอยู่กับ: อื่นๆ ระบุ', 'text', null, { required: true, depends: { name: 's1_living_with', value: 'อื่นๆ' } }),
+      field(13, 's1_mosque', SECTIONS.general, 'มัสยิด', 'text', null, { required: false }),
+      field(14, 's1_village', SECTIONS.general, 'หมู่บ้าน', 'text', null, { required: false }),
+      field(15, 's1_subdistrict', SECTIONS.general, 'ตำบล', 'text', null, { required: false }),
+      field(16, 's1_district', SECTIONS.general, 'อำเภอ', 'text', null, { required: false }),
+      field(17, 's1_province', SECTIONS.general, 'จังหวัด', 'text', null, { required: false }),
+      ...physicalFields,
+      computed(25, 's2_physical_total', SECTIONS.physical, 'รวมคะแนนสุขภาวะกาย'),
+      ...stressFields,
+      computed(31, 's3_stress_total', SECTIONS.stress, 'รวมคะแนนคัดกรองความเครียด'),
+      ...depressionFields,
+      computed(41, 's3_depression_total', SECTIONS.depression, 'รวมคะแนนคัดกรองภาวะซึมเศร้า'),
+      computed(42, 's3_mental_total', 'ส่วนที่ 3 สุขภาวะจิตใจภายใน', 'รวมคะแนนสุขภาวะจิตใจภายใน'),
+      ...rohaniFields,
+      computed(54, 's4_rohani_total', 'ส่วนที่ 4 สุขภาวะจิตวิญญาณ', 'รวมคะแนนสุขภาวะจิตวิญญาณ'),
+      ...familyFields,
+      computed(61, 's5_family_total', SECTIONS.family, 'รวมคะแนนความสัมพันธ์ในครอบครัว'),
+      ...socialFields,
+      computed(67, 's5_social_total', SECTIONS.social, 'รวมคะแนนความสัมพันธ์ทางสังคมและชุมชน'),
+      computed(68, 's5_family_social_total', 'ส่วนที่ 5 สุขภาวะครอบครัวและสังคม', 'รวมคะแนนสุขภาวะครอบครัวและสังคม'),
+      ...lifeFields,
+      computed(77, 's6_life_econ_total', SECTIONS.life, 'รวมคะแนนสุขภาวะชีวิตและเศรษฐกิจ'),
+      ...impactFields,
+      computed(83, 's7_impact_total', SECTIONS.impact, 'รวมคะแนนผลกระทบจากสถานการณ์พื้นที่'),
+      flag(84, 's8_stress_problem_economy', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาเศรษฐกิจ', 'stressProblems', 'ปัญหาเศรษฐกิจ'),
+      flag(85, 's8_stress_problem_health', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาสุขภาพ', 'stressProblems', 'ปัญหาสุขภาพ'),
+      flag(86, 's8_stress_problem_family', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาครอบครัว', 'stressProblems', 'ปัญหาครอบครัว'),
+      flag(87, 's8_stress_problem_work', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาการงาน', 'stressProblems', 'ปัญหาการงาน'),
+      flag(88, 's8_stress_problem_children_education', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาการศึกษาบุตรหลาน', 'stressProblems', 'ปัญหาการศึกษาบุตรหลาน'),
+      flag(89, 's8_stress_problem_safety', 'ปัญหาหลักที่สร้างความเครียด: ปัญหาความปลอดภัย', 'stressProblems', 'ปัญหาความปลอดภัย'),
+      flag(90, 's8_stress_problem_other_flag', 'ปัญหาหลักที่สร้างความเครียด: อื่น ๆ', 'stressProblems', 'อื่น ๆ'),
+      field(91, 's8_stress_problem_other_text', SECTIONS.needs, 'ปัญหาหลักที่สร้างความเครียด: อื่น ๆ ระบุ', 'text', null, { required: true, full: true, dependsFlag: 's8_stress_problem_other_flag' }),
+      flag(92, 's8_village_problem_drugs', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: ยาเสพติด', 'villageProblems', 'ยาเสพติด'),
+      flag(93, 's8_village_problem_unemployment', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: การว่างงาน', 'villageProblems', 'การว่างงาน'),
+      flag(94, 's8_village_problem_family', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: ปัญหาครอบครัว', 'villageProblems', 'ปัญหาครอบครัว'),
+      flag(95, 's8_village_problem_youth_risk', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: เยาวชนกลุ่มเสี่ยง', 'villageProblems', 'เยาวชนกลุ่มเสี่ยง'),
+      flag(96, 's8_village_problem_poverty', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: ความยากจน', 'villageProblems', 'ความยากจน'),
+      flag(97, 's8_village_problem_elderly_isolated', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: ผู้สูงอายุโดดเดี่ยว', 'villageProblems', 'ผู้สูงอายุโดดเดี่ยว'),
+      flag(98, 's8_village_problem_other_flag', 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: อื่น ๆ', 'villageProblems', 'อื่น ๆ'),
+      field(99, 's8_village_problem_other_text', SECTIONS.needs, 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน: อื่น ๆ ระบุ', 'text', null, { required: true, full: true, dependsFlag: 's8_village_problem_other_flag' }),
+      flag(100, 's8_activity_family_counseling', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: ให้คำปรึกษาครอบครัว', 'requestedActivities', 'ให้คำปรึกษาครอบครัว'),
+      flag(101, 's8_activity_islamic_mental_health_training', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: อบรมสุขภาพจิตตามหลักอิสลาม', 'requestedActivities', 'อบรมสุขภาพจิตตามหลักอิสลาม'),
+      flag(102, 's8_activity_youth', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: กิจกรรมเยาวชน', 'requestedActivities', 'กิจกรรมเยาวชน'),
+      flag(103, 's8_activity_elderly', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: กิจกรรมผู้สูงอายุ', 'requestedActivities', 'กิจกรรมผู้สูงอายุ'),
+      flag(104, 's8_activity_sports_exercise', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: กีฬาและออกกำลังกาย', 'requestedActivities', 'กีฬาและออกกำลังกาย'),
+      flag(105, 's8_activity_parenting_training', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: อบรมพ่อแม่ผู้ปกครอง', 'requestedActivities', 'อบรมพ่อแม่ผู้ปกครอง'),
+      flag(106, 's8_activity_home_visit_support', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: เยี่ยมเยียนช่วยเหลือผู้เดือดร้อน', 'requestedActivities', 'เยี่ยมเยียนช่วยเหลือผู้เดือดร้อน'),
+      flag(107, 's8_activity_support_group', 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด: กลุ่มพูดคุยและกำลังใจ', 'requestedActivities', 'กลุ่มพูดคุยและกำลังใจ'),
+      field(108, 's8_ready_join_kampung_sihat', SECTIONS.needs, 'ท่านพร้อมเข้าร่วมโครงการ “Kampung sihat” หรือไม่', 'choice', 'ready', { control: 'select' }),
+      field(109, 's8_additional_suggestions', SECTIONS.needs, 'ข้อเสนอแนะเพิ่มเติม', 'textarea', null, { required: false, full: true }),
+      field(110, 'team_observation', SECTIONS.observation, 'ข้อสังเกตจากทีมงาน', 'textarea', null, { required: false, full: true })
+    ].sort((a, b) => a.seq - b.seq);
+
+    const TOTAL_FIELDS = FIELDS.filter(f => f.kind === 'computed').map(f => f.name);
+    const FIELD_BY_NAME = Object.fromEntries(FIELDS.map(f => [f.name, f]));
+
+    const SCORE_GROUPS = {
+      s2_physical_total: physicalFields.map(f => f.name),
+      s3_stress_total: stressFields.map(f => f.name),
+      s3_depression_total: depressionFields.map(f => f.name),
+      s4_rohani_total: rohaniFields.map(f => f.name),
+      s5_family_total: familyFields.map(f => f.name),
+      s5_social_total: socialFields.map(f => f.name),
+      s6_life_econ_total: lifeFields.map(f => f.name),
+      s7_impact_total: impactFields.map(f => f.name)
+    };
+
+    const SCORE_DEFS = [
+      { key: 'physical', field: 's2_physical_total', label: 'สุขภาวะกาย', max: 7, risk: false },
+      { key: 'stress', field: 's3_stress_total', label: 'ความเครียด', max: 15, risk: true },
+      { key: 'depression', field: 's3_depression_total', label: 'ภาวะซึมเศร้า', max: 27, risk: true },
+      { key: 'mental', field: 's3_mental_total', label: 'จิตใจภายใน', max: 42, risk: true },
+      { key: 'rohani', field: 's4_rohani_total', label: 'จิตวิญญาณ', max: 33, risk: false },
+      { key: 'familySocial', field: 's5_family_social_total', label: 'ครอบครัวและสังคม', max: 44, risk: false },
+      { key: 'lifeEconomy', field: 's6_life_econ_total', label: 'ชีวิตและเศรษฐกิจ', max: 32, risk: false },
+      { key: 'impact', field: 's7_impact_total', label: 'ผลกระทบพื้นที่', max: 20, risk: true }
+    ];
+
+    const FLAG_TITLES = {
+      stressProblems: 'ปัญหาหลักที่สร้างความเครียด',
+      villageProblems: 'ปัญหาที่น่ากังวลที่สุดในหมู่บ้าน',
+      requestedActivities: 'กิจกรรมที่ต้องการให้ชุมชน/มัสยิดจัด'
+    };
+
+    const state = {
+      dashboard: null,
+      submitting: false
+    };
+
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => Array.from(document.querySelectorAll(selector));
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+      $('#gasUrlBox').textContent = GAS_URL;
+      renderForm();
+      renderVariables();
+      bindEvents();
+      setDefaultDate();
+      updateFormState();
+      loadDashboard();
+    }
+
+    function bindEvents() {
+      $$('[data-view-button]').forEach(button => {
+        button.addEventListener('click', () => showView(button.dataset.viewButton));
+      });
+
+      $$('[data-view-jump]').forEach(button => {
+        button.addEventListener('click', () => showView(button.dataset.viewJump));
+      });
+
+      $('#refreshButton').addEventListener('click', loadDashboard);
+      $('#pingButton').addEventListener('click', pingApi);
+      $('#resetButton').addEventListener('click', resetForm);
+      $('#surveyForm').addEventListener('submit', handleSubmit);
+      $('#surveyForm').addEventListener('input', updateFormState);
+      $('#surveyForm').addEventListener('change', updateFormState);
+    }
+
+    function showView(name) {
+      const views = {
+        dashboard: '#dashboardView',
+        form: '#formView',
+        variables: '#variablesView'
+      };
+
+      Object.entries(views).forEach(([key, selector]) => {
+        $(selector).hidden = key !== name;
+      });
+
+      $$('[data-view-button]').forEach(button => {
+        button.setAttribute('aria-selected', String(button.dataset.viewButton === name));
+      });
+    }
+
+    function renderForm() {
+      $('#formSections').innerHTML = FORM_ORDER.map(section => {
+        const fields = FIELDS.filter(f => f.section === section && f.kind !== 'computed');
+        if (!fields.length) return '';
+        const normalFields = fields.filter(f => f.kind !== 'flag');
+        const flagGroups = [...new Set(fields.filter(f => f.kind === 'flag').map(f => f.group))];
+        return `
+          <section class="form-panel">
+            <header>
+              <div>
+                <h2>${escapeHtml(section)}</h2>
+                <p class="panel-note">${sectionHint(section)}</p>
+              </div>
+              <span class="section-count">${fields.length} ตัวแปร</span>
+            </header>
+            <div class="form-grid">
+              ${normalFields.map(renderField).join('')}
+            </div>
+            ${flagGroups.map(group => renderFlagGroup(group, fields.filter(f => f.group === group))).join('')}
+          </section>
+        `;
+      }).join('');
+    }
+
+    function renderField(f) {
+      const conditionAttrs = conditionAttributes(f);
+      const full = f.full || f.kind === 'textarea' || f.kind === 'choice' && f.optionKey !== 'yes_no_unsure' && f.optionKey !== 'likert_0_4' ? ' full' : '';
+      return `
+        <div class="field${full}" data-field-wrapper="${escapeAttr(f.name)}"${conditionAttrs}>
+          <label class="field-label" for="${inputId(f.name)}">${escapeHtml(f.label)}${f.required ? ' *' : ''}</label>
+          ${renderControl(f)}
+          <div class="field-code">${escapeHtml(f.name)}</div>
+        </div>
+      `;
+    }
+
+    function renderControl(f) {
+      const baseRequired = f.required ? 'data-base-required="true"' : 'data-base-required="false"';
+      const required = f.required ? 'required' : '';
+
+      if (f.kind === 'date') {
+        return `<input id="${inputId(f.name)}" name="${escapeAttr(f.name)}" type="date" ${required} ${baseRequired}>`;
+      }
+
+      if (f.kind === 'textarea') {
+        return `<textarea id="${inputId(f.name)}" name="${escapeAttr(f.name)}" ${required} ${baseRequired}></textarea>`;
+      }
+
+      if (f.kind === 'text') {
+        const placeholder = f.placeholder ? ` placeholder="${escapeAttr(f.placeholder)}"` : '';
+        return `<input id="${inputId(f.name)}" name="${escapeAttr(f.name)}" type="text"${placeholder} ${required} ${baseRequired}>`;
+      }
+
+      if (f.kind === 'choice' && f.control === 'select') {
+        const options = OPTIONS[f.optionKey] || [];
+        return `
+          <select id="${inputId(f.name)}" name="${escapeAttr(f.name)}" ${required} ${baseRequired}>
+            <option value="">เลือกคำตอบ</option>
+            ${options.map(option => `<option value="${escapeAttr(option)}">${escapeHtml(option)}</option>`).join('')}
+          </select>
+        `;
+      }
+
+      if (f.kind === 'choice') {
+        const options = OPTIONS[f.optionKey] || [];
+        return `
+          <div class="choice-grid" id="${inputId(f.name)}" role="radiogroup" aria-label="${escapeAttr(f.label)}">
+            ${options.map(option => `
+              <label class="choice-chip">
+                <input type="radio" name="${escapeAttr(f.name)}" value="${escapeAttr(option)}" ${required} ${baseRequired}>
+                <span>${escapeHtml(option)}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      return '';
+    }
+
+    function renderFlagGroup(group, fields) {
+      return `
+        <div class="flag-group">
+          <h3>${escapeHtml(FLAG_TITLES[group] || group)}</h3>
+          <div class="flag-grid">
+            ${fields.map(f => `
+              <label class="check-chip">
+                <input id="${inputId(f.name)}" type="checkbox" name="${escapeAttr(f.name)}" value="1">
+                <span>${escapeHtml(f.shortLabel || f.label)}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderVariables() {
+      const total = FIELDS.length;
+      const computedCount = FIELDS.filter(f => f.kind === 'computed').length;
+      const inputCount = total - computedCount;
+      const flagCount = FIELDS.filter(f => f.kind === 'flag').length;
+      const sectionCount = new Set(FIELDS.map(f => f.section)).size;
+
+      $('#variablesSummary').innerHTML = [
+        ['ตัวแปรทั้งหมด', total],
+        ['ตัวแปรกรอกข้อมูล', inputCount],
+        ['ตัวแปรคำนวณ', computedCount],
+        ['ตัวแปร 0/1', flagCount],
+        ['หมวดข้อมูล', sectionCount]
+      ].map(([label, value]) => `
+        <div class="kpi">
+          <small>${label}</small>
+          <strong>${value}</strong>
+          <span>อ้างอิงจากไฟล์ Excel</span>
+        </div>
+      `).join('');
+
+      $('#variableRows').innerHTML = FIELDS.map(f => `
+        <tr>
+          <td>${f.seq}</td>
+          <td><strong>${escapeHtml(f.name)}</strong></td>
+          <td>${escapeHtml(f.section)}</td>
+          <td>${escapeHtml(f.label)}</td>
+          <td>${fieldTypeLabel(f)}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadDashboard() {
+      setConnectionStatus('กำลังโหลดข้อมูล dashboard...');
+      renderDashboardLoading();
+      try {
+        const response = await apiGet('dashboard');
+        if (!response.ok) throw new Error(response.error || 'โหลดข้อมูลไม่สำเร็จ');
+        state.dashboard = response.data;
+        renderDashboard(response.data);
+        setConnectionStatus(`เชื่อมต่อแล้ว: ${response.data.generatedAt || ''}`);
+      } catch (error) {
+        renderDashboardEmpty();
+        setConnectionStatus('เชื่อมต่อไม่ได้');
+        showToast(`ยังดึงข้อมูลจาก Apps Script ไม่ได้: ${error.message}`);
+      }
+    }
+
+    async function pingApi() {
+      setConnectionStatus('กำลังทดสอบ...');
+      try {
+        const response = await apiGet('ping');
+        setConnectionStatus(response.ok ? 'เชื่อมต่อสำเร็จ' : 'เชื่อมต่อไม่สำเร็จ');
+        showToast(response.message || 'ทดสอบการเชื่อมต่อแล้ว');
+      } catch (error) {
+        setConnectionStatus('เชื่อมต่อไม่ได้');
+        showToast(`ทดสอบไม่สำเร็จ: ${error.message}`);
+      }
+    }
+
+    function apiGet(action, params = {}) {
+      return new Promise((resolve, reject) => {
+        const callbackName = `__ksCallback_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+        const query = new URLSearchParams({
+          action,
+          callback: callbackName,
+          _: String(Date.now()),
+          ...params
+        });
+        const script = document.createElement('script');
+        const timeout = window.setTimeout(() => {
+          cleanup();
+          reject(new Error('หมดเวลารอ Apps Script'));
+        }, 15000);
+
+        window[callbackName] = data => {
+          cleanup();
+          resolve(data);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error('โหลดสคริปต์ JSONP ไม่สำเร็จ'));
+        };
+
+        function cleanup() {
+          window.clearTimeout(timeout);
+          delete window[callbackName];
+          script.remove();
+        }
+
+        script.src = `${GAS_URL}?${query.toString()}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    function renderDashboardLoading() {
+      $('#kpiGrid').innerHTML = kpiHtml('กำลังโหลด', '...', 'รอสักครู่') + kpiHtml('สถานะ', '...', 'กำลังเชื่อมต่อ');
+      $('#scoreBars').innerHTML = '<div class="empty-state">กำลังโหลดข้อมูลจาก Google Sheets</div>';
+      $('#recentRows').innerHTML = '';
+    }
+
+    function renderDashboardEmpty() {
+      $('#kpiGrid').innerHTML = [
+        kpiHtml('จำนวนแบบสอบถาม', '0', 'ยังไม่มีข้อมูลหรือยังเชื่อมต่อไม่ได้'),
+        kpiHtml('เครียดสูง', '0', 'รอข้อมูลจากชีต'),
+        kpiHtml('ซึมเศร้าปานกลางขึ้นไป', '0', 'รอข้อมูลจากชีต'),
+        kpiHtml('คิดทำร้ายตนเอง', '0', 'รอข้อมูลจากชีต')
+      ].join('');
+      $('#scoreBars').innerHTML = '<div class="empty-state">ยังไม่มีข้อมูลสำหรับแสดงคะแนนเฉลี่ย</div>';
+      ['genderDist', 'ageDist', 'readyDist', 'mosqueDist', 'villageDist', 'subdistrictDist', 'districtDist', 'provinceDist', 'stressProblemFlags', 'villageProblemFlags', 'activityFlags'].forEach(id => {
+        $(`#${id}`).innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>';
+      });
+      $('#alertGrid').innerHTML = '';
+      $('#recentRows').innerHTML = '<tr><td colspan="9">ยังไม่มีรายการล่าสุด</td></tr>';
+    }
+
+    function renderDashboard(data) {
+      const total = data.totalRecords || 0;
+      const alerts = data.alerts || {};
+      $('#kpiGrid').innerHTML = [
+        kpiHtml('จำนวนแบบสอบถาม', total, data.generatedAt ? `อัปเดต ${data.generatedAt}` : 'ข้อมูลทั้งหมด', 'teal', 'records'),
+        kpiHtml('เครียดสูง', alerts.highStress || 0, 'คะแนนความเครียด 11 ขึ้นไป', 'gold', 'pulse'),
+        kpiHtml('ซึมเศร้าปานกลางขึ้นไป', alerts.depressionModerateUp || 0, 'คะแนนภาวะซึมเศร้า 10 ขึ้นไป', 'rose', 'trend'),
+        kpiHtml('คิดทำร้ายตนเอง', alerts.selfHarmThought || 0, 'ตอบมากกว่า “ไม่เลย”', 'danger', 'shield')
+      ].join('');
+
+      renderScoreBars(data.averages || {});
+      renderAlerts(alerts);
+      renderDistribution('genderDist', data.distributions && data.distributions.gender, total);
+      renderDistribution('ageDist', data.distributions && data.distributions.ageGroup, total);
+      renderDistribution('readyDist', data.distributions && data.distributions.ready, total);
+      renderDistribution('mosqueDist', data.distributions && data.distributions.mosque, total);
+      renderDistribution('villageDist', data.distributions && data.distributions.village, total);
+      renderDistribution('subdistrictDist', data.distributions && data.distributions.subdistrict, total);
+      renderDistribution('districtDist', data.distributions && data.distributions.district, total);
+      renderDistribution('provinceDist', data.distributions && data.distributions.province, total);
+      renderFlagList('stressProblemFlags', data.flags && data.flags.stressProblems, total);
+      renderFlagList('villageProblemFlags', data.flags && data.flags.villageProblems, total);
+      renderFlagList('activityFlags', data.flags && data.flags.requestedActivities, total);
+      renderRecentRows(data.recentRecords || []);
+    }
+
+    function renderScoreBars(averages) {
+      $('#scoreBars').innerHTML = SCORE_DEFS.map(def => {
+        const value = Number(averages[def.key] || 0);
+        const width = Math.max(0, Math.min(100, (value / def.max) * 100));
+        return `
+          <div class="score-row">
+            <div class="score-label">
+              <span>${escapeHtml(def.label)}</span>
+              <small>${escapeHtml(scoreMeta(def, value))}</small>
+            </div>
+            <div class="bar" aria-hidden="true">
+              <div class="bar-fill${def.risk ? ' risk' : ''}" style="width:${width}%"></div>
+            </div>
+            <div class="score-value">${formatNumber(value)} / ${def.max}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAlerts(alerts) {
+      const items = [
+        ['เครียดสูง', alerts.highStress || 0, 'gold', 'pulse', 'เฝ้าติดตามคะแนนรวมความเครียด'],
+        ['ซึมเศร้าปานกลางขึ้นไป', alerts.depressionModerateUp || 0, 'rose', 'trend', 'คัดกรองจากคะแนนภาวะซึมเศร้า'],
+        ['ข้อคิดทำร้ายตนเอง', alerts.selfHarmThought || 0, 'plum', 'shield', 'ควรส่งต่อหรือประเมินซ้ำตามแนวทาง']
+      ];
+      $('#alertGrid').innerHTML = items.map(([label, value, tone, icon, note]) => `
+        <div class="mini-card" data-tone="${tone}">
+          <div class="mini-icon" aria-hidden="true">${metricIcon(icon)}</div>
+          <strong>${value}</strong>
+          <span>${escapeHtml(label)}</span>
+          <div class="mini-note">${escapeHtml(note)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderDistribution(id, rows = [], total = 0) {
+      const root = $(`#${id}`);
+      if (!rows || !rows.length) {
+        root.innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>';
+        return;
+      }
+      root.innerHTML = rows.map(row => {
+        const pct = total ? Math.round((row.count / total) * 100) : 0;
+        return `
+          <div class="dist-row">
+            <div class="dist-label">${escapeHtml(row.label || 'ไม่ระบุ')}</div>
+            <div class="dist-count">${row.count}</div>
+            <div class="dist-track"><div class="dist-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderFlagList(id, rows = [], total = 0) {
+      const root = $(`#${id}`);
+      if (!rows || !rows.length) {
+        root.innerHTML = '<div class="empty-state">ยังไม่มีข้อมูล</div>';
+        return;
+      }
+      const max = Math.max(1, ...rows.map(row => row.count || 0), total ? Math.ceil(total / 2) : 1);
+      root.innerHTML = rows.map(row => {
+        const pct = Math.round(((row.count || 0) / max) * 100);
+        return `
+          <div class="flag-row">
+            <div class="flag-label">${escapeHtml(row.label || row.key)}</div>
+            <div class="flag-count">${row.count || 0}</div>
+            <div class="flag-track"><div class="flag-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderRecentRows(rows) {
+      if (!rows.length) {
+        $('#recentRows').innerHTML = '<tr><td colspan="9">ยังไม่มีรายการล่าสุด</td></tr>';
+        return;
+      }
+      $('#recentRows').innerHTML = rows.map(row => `
+        <tr>
+          <td>${escapeHtml(row.record_id || '')}</td>
+          <td>${escapeHtml(row.collection_date || '')}</td>
+          <td>${escapeHtml(row.s1_name || '')}</td>
+          <td>${escapeHtml(row.s1_gender || '')}</td>
+          <td>${escapeHtml(row.s1_age_group || '')}</td>
+          <td>${escapeHtml(formatLocation(row))}</td>
+          <td>${escapeHtml(row.s3_stress_total ?? '')}</td>
+          <td>${escapeHtml(row.s3_depression_total ?? '')}</td>
+          <td>${escapeHtml(row.s8_ready_join_kampung_sihat || '')}</td>
+        </tr>
+      `).join('');
+    }
+
+    function formatLocation(row) {
+      return [
+        row.s1_mosque,
+        row.s1_village,
+        row.s1_subdistrict,
+        row.s1_district,
+        row.s1_province
+      ].filter(Boolean).join(' / ');
+    }
+
+    function kpiHtml(label, value, note, tone = 'teal', icon = 'records') {
+      return `
+        <div class="kpi" data-tone="${escapeAttr(tone)}">
+          <div class="kpi-main">
+            <small>${escapeHtml(label)}</small>
+            <strong>${escapeHtml(String(value))}</strong>
+          </div>
+          <div class="kpi-icon" aria-hidden="true">${metricIcon(icon)}</div>
+          <span>${escapeHtml(note)}</span>
+        </div>
+      `;
+    }
+
+    function scoreMeta(def, value) {
+      if (def.key === 'stress') return value >= 11 ? 'ระดับสูง' : value >= 6 ? 'ระดับปานกลาง' : 'ระดับต่ำ';
+      if (def.key === 'depression') return value >= 20 ? 'รุนแรง' : value >= 15 ? 'ค่อนข้างรุนแรง' : value >= 10 ? 'ปานกลาง' : value >= 5 ? 'เล็กน้อย' : 'น้อยมาก';
+      if (def.key === 'impact') return value >= 14 ? 'ผลกระทบสูง' : value >= 7 ? 'ผลกระทบปานกลาง' : 'ผลกระทบต่ำ';
+      return def.risk ? 'ยิ่งต่ำยิ่งดี' : 'ยิ่งสูงยิ่งดี';
+    }
+
+    function metricIcon(name) {
+      const icons = {
+        records: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>',
+        pulse: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>',
+        trend: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>',
+        shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg>'
+      };
+      return icons[name] || icons.records;
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      if (state.submitting) return;
+
+      const validation = validateForm();
+      if (!validation.ok) {
+        showToast(validation.message);
+        validation.element && validation.element.focus();
+        return;
+      }
+
+      const data = collectFormData();
+      state.submitting = true;
+      $('#submitStatus').textContent = 'กำลังส่งข้อมูลไป Apps Script...';
+
+      try {
+        await submitRecord(data);
+        showToast('ส่งข้อมูลแล้ว กำลังรอ Google Sheets บันทึก');
+        $('#submitStatus').textContent = 'ส่งข้อมูลแล้ว';
+        window.setTimeout(() => {
+          state.submitting = false;
+          resetForm(false);
+          loadDashboard();
+          showView('dashboard');
+        }, 1400);
+      } catch (error) {
+        state.submitting = false;
+        $('#submitStatus').textContent = 'ส่งข้อมูลไม่สำเร็จ';
+        showToast(`ส่งข้อมูลไม่สำเร็จ: ${error.message}`);
+      }
+    }
+
+    async function submitRecord(data) {
+      const payload = JSON.stringify({ action: 'submit', data, source: 'standalone-html' });
+
+      if (window.fetch && window.URLSearchParams) {
+        const body = new URLSearchParams();
+        body.set('payload', payload);
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body
+        });
+        return;
+      }
+
+      submitViaHiddenForm(payload);
+    }
+
+    function submitViaHiddenForm(payload) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = GAS_URL;
+      form.target = 'gasSubmitFrame';
+      form.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'payload';
+      input.value = payload;
+      form.appendChild(input);
+
+      document.body.appendChild(form);
+      form.submit();
+      window.setTimeout(() => form.remove(), 1000);
+    }
+
+    function collectFormData() {
+      const data = {};
+      FIELDS.filter(f => f.kind !== 'computed').forEach(f => {
+        data[f.name] = readFieldValue(f);
+      });
+      Object.assign(data, calculateScores(data));
+      return data;
+    }
+
+    function calculateScores(data) {
+      const physical = sumScore(data, SCORE_GROUPS.s2_physical_total, SCORE_MAPS.yes_no_unsure);
+      const stress = sumScore(data, SCORE_GROUPS.s3_stress_total, SCORE_MAPS.stress);
+      const depression = sumScore(data, SCORE_GROUPS.s3_depression_total, SCORE_MAPS.depression);
+      const rohani = sumScore(data, SCORE_GROUPS.s4_rohani_total, SCORE_MAPS.spiritual_freq);
+      const family = sumScore(data, SCORE_GROUPS.s5_family_total, SCORE_MAPS.likert_0_4);
+      const social = sumScore(data, SCORE_GROUPS.s5_social_total, SCORE_MAPS.likert_0_4);
+      const life = sumScore(data, SCORE_GROUPS.s6_life_econ_total, SCORE_MAPS.likert_0_4);
+      const impact = sumScore(data, SCORE_GROUPS.s7_impact_total, SCORE_MAPS.likert_0_4);
+
+      return {
+        s2_physical_total: physical,
+        s3_stress_total: stress,
+        s3_depression_total: depression,
+        s3_mental_total: stress + depression,
+        s4_rohani_total: rohani,
+        s5_family_total: family,
+        s5_social_total: social,
+        s5_family_social_total: family + social,
+        s6_life_econ_total: life,
+        s7_impact_total: impact
+      };
+    }
+
+    function sumScore(data, names, map) {
+      return names.reduce((sum, name) => sum + (map[data[name]] ?? 0), 0);
+    }
+
+    function validateForm() {
+      const requiredFields = FIELDS.filter(f => isRequiredNow(f));
+      for (const f of requiredFields) {
+        const value = readFieldValue(f);
+        if (value === '' || value === null || typeof value === 'undefined') {
+          return {
+            ok: false,
+            message: `กรุณากรอก: ${f.label}`,
+            element: firstInputForField(f.name)
+          };
+        }
+      }
+      return { ok: true };
+    }
+
+    function updateFormState() {
+      updateConditionalFields();
+      updateCompletion();
+      updateScorePreview();
+    }
+
+    function updateConditionalFields() {
+      $$('[data-depends-name], [data-depends-flag]').forEach(wrapper => {
+        let visible = true;
+        if (wrapper.dataset.dependsName) {
+          visible = readFieldValue(FIELD_BY_NAME[wrapper.dataset.dependsName]) === wrapper.dataset.dependsValue;
+        }
+        if (wrapper.dataset.dependsFlag) {
+          const checkbox = firstInputForField(wrapper.dataset.dependsFlag);
+          visible = Boolean(checkbox && checkbox.checked);
+        }
+        wrapper.hidden = !visible;
+        wrapper.querySelectorAll('input, select, textarea').forEach(control => {
+          control.required = visible && control.dataset.baseRequired === 'true';
+          if (!visible) control.value = '';
+        });
+      });
+    }
+
+    function updateCompletion() {
+      const requiredFields = FIELDS.filter(f => isRequiredNow(f));
+      const answered = requiredFields.filter(f => {
+        const value = readFieldValue(f);
+        return value !== '' && value !== null && typeof value !== 'undefined';
+      }).length;
+      const total = requiredFields.length;
+      const pct = total ? Math.round((answered / total) * 100) : 0;
+      $('#completionText').textContent = `${answered} จาก ${total} ช่องที่จำเป็น`;
+      $('#completionBar').style.width = `${pct}%`;
+    }
+
+    function updateScorePreview() {
+      const data = collectFormData();
+      const scores = calculateScores(data);
+      $('#scorePreview').innerHTML = SCORE_DEFS.map(def => `
+        <div class="preview-item">
+          <small>${escapeHtml(def.label)}</small>
+          <strong>${scores[def.field] ?? 0}</strong>
+        </div>
+      `).join('');
+    }
+
+    function isRequiredNow(f) {
+      if (!f.required || f.kind === 'computed' || f.kind === 'flag') return false;
+      const wrapper = document.querySelector(`[data-field-wrapper="${cssEscape(f.name)}"]`);
+      return !wrapper || !wrapper.hidden;
+    }
+
+    function readFieldValue(f) {
+      if (!f) return '';
+      if (f.kind === 'flag') {
+        const checkbox = firstInputForField(f.name);
+        return checkbox && checkbox.checked ? 1 : 0;
+      }
+      if (f.kind === 'choice' && f.control !== 'select') {
+        const checked = document.querySelector(`input[name="${cssEscape(f.name)}"]:checked`);
+        return checked ? checked.value : '';
+      }
+      const input = firstInputForField(f.name);
+      return input ? input.value.trim() : '';
+    }
+
+    function firstInputForField(name) {
+      return document.querySelector(`[name="${cssEscape(name)}"]`);
+    }
+
+    function resetForm(showMessage = true) {
+      $('#surveyForm').reset();
+      setDefaultDate();
+      updateFormState();
+      $('#submitStatus').textContent = 'พร้อมกรอกข้อมูล';
+      if (showMessage) showToast('ล้างฟอร์มแล้ว');
+    }
+
+    function setDefaultDate() {
+      const date = firstInputForField('collection_date');
+      if (date && !date.value) date.value = new Date().toISOString().slice(0, 10);
+    }
+
+    function conditionAttributes(f) {
+      if (f.depends) {
+        return ` data-depends-name="${escapeAttr(f.depends.name)}" data-depends-value="${escapeAttr(f.depends.value)}"`;
+      }
+      if (f.dependsFlag) {
+        return ` data-depends-flag="${escapeAttr(f.dependsFlag)}"`;
+      }
+      return '';
+    }
+
+    function sectionHint(section) {
+      const hints = {
+        [SECTIONS.management]: 'ระบบจะสร้าง record_id ให้เมื่อเว้นว่าง',
+        [SECTIONS.needs]: 'ช่อง checkbox จะถูกบันทึกเป็น 1 เมื่อเลือก และ 0 เมื่อไม่เลือก',
+        [SECTIONS.observation]: 'ใช้บันทึกข้อสังเกตเพิ่มเติมจากทีมงาน'
+      };
+      return hints[section] || 'กรอกตามแบบสอบถามต้นฉบับ';
+    }
+
+    function fieldTypeLabel(f) {
+      if (f.kind === 'choice') return `ตัวเลือก: ${(OPTIONS[f.optionKey] || []).join('; ')}`;
+      if (f.kind === 'flag') return '0/1';
+      if (f.kind === 'computed') return 'สูตรคำนวณ';
+      if (f.kind === 'date') return 'วันที่';
+      if (f.kind === 'textarea') return 'ข้อความยาว';
+      return 'ข้อความ';
+    }
+
+    function setConnectionStatus(text) {
+      $('#connectionStatus').textContent = text;
+    }
+
+    function showToast(message) {
+      const toast = $('#toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 3600);
+    }
+
+    function inputId(name) {
+      return `field_${name}`;
+    }
+
+    function formatNumber(value) {
+      const number = Number(value || 0);
+      return Number.isInteger(number) ? String(number) : number.toFixed(2);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function cssEscape(value) {
+      if (window.CSS && CSS.escape) return CSS.escape(value);
+      return String(value).replace(/["\\]/g, '\\$&');
+    }
+  </script>
+</body>
+</html>
